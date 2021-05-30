@@ -1,14 +1,18 @@
-const express = require("express");
 const http = require("http");
+const { addUser, getUser, deleteUser, getUsers } = require("./users.js");
+const express = require("express");
 const cors = require("cors");
 const app = express();
-const { addUser, getUser, deleteUser, getUsers } = require("./users");
 const { API_VERSION } = require("./config");
 const bodyParser = require("body-parser");
 
+
+app.use(express.json());
+app.use(cors());
+
 //aqui de bajo van las rutas ex:
 //const authRoutes = require("./routers/auth.js");
-//const userRoutes = require("./routers/user.js");
+const userRoutes = require("./routes/users.js");
 const newTheme = require("./routes/newTheme");
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -17,15 +21,17 @@ app.use(bodyParser.json());
 //Aqui es a como se veran las rutas en el servidor:
 //app.use(`/api/${API_VERSION}`, authRoutes);
 //app.use(`/api/${API_VERSION}`, userRoutes);
+app.use(`/api/${API_VERSION}`, userRoutes)
 app.use(`/api/${API_VERSION}`, newTheme);
+
+
+
 
 /////////////////////////////////////////
 ///////////sockets Events///////////////
 ///////////////////////////////////////
 
 var server = http.createServer(app);
-app.use(express.json());
-app.use(cors());
 
 //Codigo se socket.io
 var io = require("socket.io")(server, {
@@ -63,4 +69,6 @@ io.on("connection", (socket) => {
   });
 });
 
-module.exports = { app, server };
+
+
+module.exports = { server, app };

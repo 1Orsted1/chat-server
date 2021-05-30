@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { server } = require("./app");
+const { server } = require("./app.js");
 const PORT_SERVER = 5000 || process.env.PORT;
 const { API_VERSION, IP_SERVER, PORT_DB } = require("./config");
 

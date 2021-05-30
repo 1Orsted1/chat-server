@@ -1,6 +1,7 @@
 const Theme = require("../models/theme.js");
 
 const newOne = async (req, res) => {
+  console.log("llego");
   const theme = new Theme();
   const { name, date } = req.body;
   theme.name = name;
@@ -25,6 +26,7 @@ const newOne = async (req, res) => {
 };
 
 const getThemes = async (req, res) => {
+  console.log("entro")
   const themes = await Theme.find();
   res.status(200).send({ Themes: themes });
 };
