@@ -4,7 +4,7 @@ const PORT_SERVER = 5000 || process.env.PORT;
 const { API_VERSION, IP_SERVER, PORT_DB } = require("./config");
 
 mongoose.set("useFindAndModify", false);
-
+mongoose.set("useCreateIndex", true);
 mongoose.connect(
   `mongodb://${IP_SERVER}:${PORT_DB}/grupo_estudio`,
   { useNewUrlParser: true, useUnifiedTopology: true },
