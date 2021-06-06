@@ -15,6 +15,7 @@ const newTheme = require("./routes/newTheme");
 const groupRoutes = require("./routes/groups.js")
 const roomRoutes = require("./routes/rooms.js")
 const messageRoutes = require("./routes/messages.js")
+const authRoutes = require("./routes/auth.js")
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -27,6 +28,7 @@ app.use(`/api/${API_VERSION}`, newTheme);
 app.use(`/api/${API_VERSION}`, groupRoutes);
 app.use(`/api/${API_VERSION}`, roomRoutes);
 app.use(`/api/${API_VERSION}`, messageRoutes);
+app.use(`/api/${API_VERSION}`, authRoutes);
 
 
 /////////////////////////////////////////
