@@ -6,30 +6,37 @@ const app = express();
 const { API_VERSION } = require("./config");
 const bodyParser = require("body-parser");
 
-
 app.use(express.json());
 app.use(cors());
 
 const userRoutes = require("./routes/users.js");
 const newTheme = require("./routes/newTheme");
-const groupRoutes = require("./routes/groups.js")
-const roomRoutes = require("./routes/rooms.js")
-const messageRoutes = require("./routes/messages.js")
-const authRoutes = require("./routes/auth.js")
+const groupRoutes = require("./routes/groups.js");
+const roomRoutes = require("./routes/rooms.js");
+const messageRoutes = require("./routes/messages.js");
+const authRoutes = require("./routes/auth.js");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-//Aqui es a como se veran las rutas en el servidor:
-//app.use(`/api/${API_VERSION}`, authRoutes);
-//app.use(`/api/${API_VERSION}`, userRoutes);
-app.use(`/api/${API_VERSION}`, userRoutes)
+//alternativa a cors()
+// app.use((req, res, next) => {
+//   res.header("Access-Control-Allow-Origin", "*");
+//   res.header(
+//     "Access-Control-Allow-Headers",
+//     "Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method"
+//   );
+//   res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
+//   res.header("Allow", "GET, POST, OPTIONS, PUT, DELETE");
+//   next();
+// });
+
+app.use(`/api/${API_VERSION}`, userRoutes);
 app.use(`/api/${API_VERSION}`, newTheme);
 app.use(`/api/${API_VERSION}`, groupRoutes);
 app.use(`/api/${API_VERSION}`, roomRoutes);
 app.use(`/api/${API_VERSION}`, messageRoutes);
 app.use(`/api/${API_VERSION}`, authRoutes);
-
 
 /////////////////////////////////////////
 ///////////sockets Events///////////////
@@ -57,7 +64,9 @@ io.on("connection", (socket) => {
 
   socket.on("sendMessage", (message) => {
     const user = getUser(socket.id);
-    socket.in(user.room).emit("message", {user: user.name, contentMessage: message });
+    socket
+      .in(user.room)
+      .emit("message", { user: user.name, contentMessage: message });
   });
 
   socket.on("disconnect", () => {
@@ -72,7 +81,5 @@ io.on("connection", (socket) => {
     }
   });
 });
-
-
 
 module.exports = { server, app };

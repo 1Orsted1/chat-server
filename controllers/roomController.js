@@ -35,4 +35,19 @@ const newRoom = (req, res) => {
   }
 };
 
-module.exports = { newRoom };
+function getRooms(req, res) {
+  const query = req.query;
+  if (query.idRoom.match(/^[0-9a-fA-F]{24}$/)) { 
+  Room.find({ _id: query.idRoom }).then((room) => {
+    if (!room[0]) {
+      res.status(404).send({ message: "no se ha encontrado ninguna sala" });
+    } else {
+      res.status(200).send({ room });
+    }
+  });
+  }else{
+    res.status(500).send({ message: "El id es incorrecto" });
+  }
+}
+
+module.exports = { newRoom, getRooms };

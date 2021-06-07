@@ -27,4 +27,15 @@ const newMessageContainer = (req, res) => {
   }
 };
 
-module.exports = { newMessageContainer };
+const getMessages = (req, res) => {
+  const query = req.query;
+  Message.find({ codigoSala: query.codigo }).then((message) => {
+    if (!message[0]) {
+      res.status(404).send({ message: `contenedor de mensajes inexistente` });
+    } else {
+      res.status(200).send({ message });
+    }
+  });
+};
+
+module.exports = { newMessageContainer, getMessages };
