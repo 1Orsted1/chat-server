@@ -38,4 +38,44 @@ const getMessages = (req, res) => {
   });
 };
 
-module.exports = { newMessageContainer, getMessages };
+const oneMore = async (codigoS, value) => {
+  const grupos = Message.updateOne(
+    { codigoSala: codigoS },
+    {
+      $push: {
+        contenido: value,
+      },
+    }
+  );
+  return grupos;
+};
+
+const addMessage = async (req, res) => {
+  const { value, codigoS } = req.body;
+
+  var discrepancy = null;
+  discrepancy =
+    value == undefined
+      ? "Se necesitan los datos del mensaje "
+      : discrepancy;
+  discrepancy =
+    codigoS == undefined
+      ? "Se necesita el codigo de la sala para esta operacion"
+      : discrepancy;
+
+  if (discrepancy != null) res.status(404).send({ message: discrepancy });
+  else {
+    const response = await oneMore(codigoS, value);
+    if (response.nModified === 1 && response.ok === 1) {
+      res.status(200).send({
+        message: `Nuevo mensaje!!`,
+      });
+    } else {
+      res.status(404).send({
+        message: `NO se guardo el mensaje`,
+      });
+    }
+  }
+};
+
+module.exports = { newMessageContainer, getMessages, addMessage };

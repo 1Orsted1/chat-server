@@ -1,5 +1,6 @@
 const Room = require("../models/rooms");
 
+
 const newRoom = (req, res) => {
   const room = new Room();
   const props = req.body;

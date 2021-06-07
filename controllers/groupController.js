@@ -71,8 +71,45 @@ const getMyOwnGroups = (req, res) => {
   });
 };
 
+const oneMore = async (grupo, value) => {
+  const grupos = await Group.updateOne(
+    { codigoGrupo: grupo },
+    { $inc: { numeroIntegrantes: 1 }, $push: { integrantes: value } }
+  );
+  return grupos;
+};
+
+const addUser = async (req, res) => {
+  const { usuario, codigoG } = req.body;
+
+  var discrepancy = null;
+  discrepancy =
+    usuario == undefined
+      ? "Se necesita el nombre de usuario del nuevo integrante "
+      : discrepancy;
+  discrepancy =
+    codigoG == undefined
+      ? "Se necesita el codigo grupo para esta operacion"
+      : discrepancy;
+
+  if (discrepancy != null) res.status(404).send({ message: discrepancy });
+  else {
+    const response = await oneMore(codigoG, usuario);
+    if (response.nModified === 1 && response.ok === 1) {
+      res.status(200).send({
+        message: `Se ha incluido al grupo con el codigo: "${codigoG}"`,
+      });
+    } else {
+      res.status(404).send({
+        message: `NO se ha podido unir al grupo con el codigo: "${codigoG}"`,
+      });
+    }
+  }
+};
+
 module.exports = {
   newGroup,
   getMyGroups,
   getMyOwnGroups,
+  addUser,
 };
