@@ -1,6 +1,5 @@
 const Room = require("../models/rooms");
 
-
 const newRoom = (req, res) => {
   const room = new Room();
   const props = req.body;
@@ -30,25 +29,40 @@ const newRoom = (req, res) => {
       else
         res.status(200).send({
           message: "sala creada correctamente",
-          group: stored,
+          Room: stored,
         });
     });
   }
 };
 
-function getRooms(req, res) {
+function getRoom(req, res) {
   const query = req.query;
-  if (query.idRoom.match(/^[0-9a-fA-F]{24}$/)) { 
-  Room.find({ _id: query.idRoom }).then((room) => {
-    if (!room[0]) {
-      res.status(404).send({ message: "no se ha encontrado ninguna sala" });
-    } else {
-      res.status(200).send({ room });
-    }
-  });
-  }else{
+  if (query.idRoom.match(/^[0-9a-fA-F]{24}$/)) {
+    Room.find({ _id: query.idRoom }).then((room) => {
+      if (!room[0]) {
+        res.status(404).send({ message: "no se ha encontrado ninguna sala" });
+      } else {
+        res.status(200).send({ room });
+      }
+    });
+  } else {
     res.status(500).send({ message: "El id es incorrecto" });
   }
 }
 
-module.exports = { newRoom, getRooms };
+function getAllRooms(req, res) {
+  const query = req.query;
+  if (query.idGrupo.match(/^[0-9a-fA-F]{24}$/)) {
+    Room.find({ idGrupo: query.idGrupo }).then((room) => {
+      if (!room[0]) {
+        res.status(404).send({ message: "no se ha encontrado ninguna sala" });
+      } else {
+        res.status(200).send({ room });
+      }
+    });
+  } else {
+    res.status(500).send({ message: "El id es incorrecto" });
+  }
+}
+
+module.exports = { newRoom, getRoom, getAllRooms };
